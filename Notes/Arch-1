@@ -1,0 +1,12 @@
+Architecture of Version 1
+User
+ ↓
+FastAPI Endpoint
+ ↓
+Git Clone Tool
+ ↓
+Repository Reader
+ ↓
+LLM
+ ↓
+Summary
