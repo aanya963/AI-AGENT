@@ -26,3 +26,29 @@ class GitHubTool:
             "state": pr.state,
             "author": pr.user.login
         }
+    
+
+    def get_pr_files(self,
+        owner,
+        repo,
+        pr_number
+    ):
+
+        repository = self.github.get_repo(
+            f"{owner}/{repo}"
+        )
+
+        pr = repository.get_pull(pr_number)
+
+        files = []
+        
+        for file in pr.get_files():
+
+            files.append({
+                "filename": file.filename,
+                "status": file.status,
+                "changes": file.changes,
+                "patch": file.patch
+            })
+
+        return files
