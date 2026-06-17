@@ -12,32 +12,48 @@ class PRReviewer:
             api_key=os.getenv("GROQ_API_KEY")
         )
 
-    def review_file(
-        self,
-        filename,
-        patch
-    ):
+    def review_file(self, filename, patch, repo_summary):
 
         prompt = f"""
-You are a Senior Software Engineer.
+        You are a Staff Software Engineer performing a Pull Request review.
 
-Review this code change.
+        Repository Context:
+        {repo_summary}
 
-File:
-{filename}
+        File:
+        {filename}
 
-Diff:
-{patch}
+        Code Diff:
+        {patch}
 
-Provide:
+        Review this code change.
 
-1. Summary
-2. Potential Bugs
-3. Performance Concerns
-4. Security Concerns
-5. Final Recommendation
-"""
+        Analyze:
 
+        1. Correctness
+        - Possible bugs
+        - Edge cases
+        - Logic issues
+
+        2. Maintainability
+        - Readability
+        - Design concerns
+        - Future maintenance risks
+
+        3. Performance
+        - Inefficiencies
+        - Unnecessary operations
+
+        4. Testing
+        - Missing test cases
+        - Regression risks
+
+        IMPORTANT:
+        - Only mention real concerns visible in the diff.
+        - Avoid generic advice.
+        - If no issue exists, explicitly say so.
+        - Be concise.
+        """
         response = self.client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[

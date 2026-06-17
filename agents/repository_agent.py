@@ -31,9 +31,4 @@ class RepositoryAgent(BaseAgent):
             readme_content,
             code_samples
         )
-        # analysis = RepoAnalyzer.analyze_repository(
-        #     scan_result,
-        #     readme_content
-        # )
-
         return analysis

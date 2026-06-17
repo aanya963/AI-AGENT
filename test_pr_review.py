@@ -14,7 +14,7 @@ first_file = files[0]
 
 review = reviewer.review_file(
     first_file["filename"],
-    first_file["patch"]
+    first_file["patch"],
 )
 
 print(review)

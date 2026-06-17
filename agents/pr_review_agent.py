@@ -32,7 +32,7 @@ class PRReviewAgent:
 
             review = self.reviewer.review_file(
                 file["filename"],
-                file["patch"]
+                file["patch"],
             )
 
             reviews.append(
