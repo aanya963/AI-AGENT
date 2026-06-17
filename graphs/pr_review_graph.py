@@ -1,7 +1,7 @@
 from typing import TypedDict
-
+from services.cache_service import CacheService
 from langgraph.graph import StateGraph, START, END
-
+from services.cache_service import CacheService
 from tools.github_tool import GitHubTool
 from services.pr_reviewer import PRReviewer
 from services.review_aggregator import ReviewAggregator
@@ -14,6 +14,8 @@ class PRReviewState(TypedDict):
     owner: str
     repo: str
     pr_number: int
+
+    force_refresh: bool
 
     repo_summary: str
 
@@ -67,16 +69,53 @@ def review_files_node(state):
 
 def repository_analysis_node(state):
 
-    print("Analyzing Repository...")
+    owner = state["owner"]
+    repo = state["repo"]
+
+    force_refresh = state.get(
+        "force_refresh",
+        False
+    )
+
+    if (
+        CacheService.exists(
+            owner,
+            repo
+        )
+        and not force_refresh
+    ):
+
+        print(
+            "Using Cached Repository Analysis..."
+        )
+
+        state["repo_summary"] = (
+            CacheService.load(
+                owner,
+                repo
+            )
+        )
+
+        return state
+
+    print(
+        "Analyzing Repository..."
+    )
 
     repo_url = (
         f"https://github.com/"
-        f"{state['owner']}/"
-        f"{state['repo']}.git"
+        f"{owner}/"
+        f"{repo}.git"
     )
 
     analysis = repo_agent.analyze(
         repo_url
+    )
+
+    CacheService.save(
+        owner,
+        repo,
+        analysis
     )
 
     state["repo_summary"] = analysis
